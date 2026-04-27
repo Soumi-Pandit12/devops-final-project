@@ -1,9 +1,13 @@
 pipeline {
     agent any
     environment {
-        // REPLACE 'your_dockerhub_username' with your actual Docker Hub username
+        // REPLACE with your actual Docker Hub ID
         DOCKER_USER = "your_dockerhub_username" 
         IMAGE_NAME  = "quicknotes-final"
+        // YOUR LATEST AWS IP
+        TARGET_IP   = "13.126.250.134"             
+        // The ID of your SSH Key stored in Jenkins Credentials
+        SSH_KEY_ID  = "final-server-key"        
     }
     stages {
         stage('Build Image') {
@@ -13,15 +17,24 @@ pipeline {
         }
         stage('Push to Docker Hub') {
             steps {
-                // This assumes you have run 'docker login' on the EC2 server manually once
+                // This assumes your Jenkins Master is logged into Docker Hub
                 sh "docker push $DOCKER_USER/$IMAGE_NAME:latest"
             }
         }
-        stage('Deploy with Compose') {
+        stage('Deploy to New EC2') {
             steps {
-                // Using Docker Compose to restart the service with the new image
-                sh "docker-compose down || true"
-                sh "DOCKER_USER=$DOCKER_USER docker-compose up -d"
+                sshagent([SSH_KEY_ID]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ubuntu@$TARGET_IP '
+                        # Clean up old containers if they exist
+                        docker stop my-running-app || true
+                        docker rm my-running-app || true
+                        docker pull $DOCKER_USER/$IMAGE_NAME:latest
+                        # Run the new container on Port 80
+                        docker run -d --name my-running-app -p 80:5000 $DOCKER_USER/$IMAGE_NAME:latest
+                    '
+                    """
+                }
             }
         }
     }
