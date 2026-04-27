@@ -4,7 +4,7 @@ import pymysql
 import pymysql.cursors
 from flask import Flask, render_template, request, redirect, url_for
 
-# -- DB config from environment --
+# -- DB config from environment (Defaults match your Docker setup) --
 DB_HOST = os.getenv("MYSQL_HOST", "quicknotes_mysql")
 DB_USER = os.getenv("MYSQL_USER", "notesuser")
 DB_PASS = os.getenv("MYSQL_PASSWORD", "notespass")
@@ -49,6 +49,8 @@ def init_db():
     except Exception as e:
         print(f"[DB] Initialization failed: {e}")
 
+# -- Routes --
+
 @app.route("/")
 def index():
     conn = get_db_connection()
@@ -60,6 +62,7 @@ def index():
 
 @app.route("/add", methods=["POST"])
 def add_note():
+    # 'note_content' should match the 'name' attribute in your HTML <textarea> or <input>
     content = request.form.get("note_content", "").strip()
     if content:
         conn = get_db_connection()
@@ -78,6 +81,8 @@ def delete_note(note_id):
     conn.close()
     return redirect(url_for("index"))
 
+# -- Entry Point --
+
 if __name__ == "__main__":
-    init_db() 
+    init_db()  # <--- CRITICAL: Now uncommented for production
     app.run(host="0.0.0.0", port=5000, debug=False)
