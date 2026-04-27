@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="QuickNotes — A simple and clean note-taking web app powered by Flask and MySQL." />
+  <title>QuickNotes | Your Personal Note Pad</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">📝</span>
+        <span class="logo-text">QuickNotes</span>
+      </div>
+      <p class="tagline">Jot it down. Never forget.</p>
+    </div>
+  </header>
+
+  <!-- ── Main Content ───────────────────────── -->
+  <main class="container">
+
+    <!-- Add Note Form -->
+    <section class="card add-note-card" aria-label="Add a new note">
+      <h2 class="section-title">New Note</h2>
+      <form action="/add" method="POST" class="note-form">
+        <textarea
+          id="note_content"
+          name="note_content"
+          class="note-input"
+          placeholder="What's on your mind? Write your note here..."
+          rows="4"
+          required
+          aria-label="Note content"
+        ></textarea>
+        <button type="submit" class="btn btn-primary" id="add-note-btn">
+          ＋ Save Note
+        </button>
+      </form>
+    </section>
+
+    <!-- Notes List -->
+    <section class="notes-section" aria-label="Your saved notes">
+      <h2 class="section-title">
+        Your Notes
+        <span class="notes-count">{{ notes | length }}</span>
+      </h2>
+
+      {% if notes %}
+        <ul class="notes-list" id="notes-list">
+          {% for note in notes %}
+          <li class="note-item" id="note-{{ note[0] }}">
+            <div class="note-body">
+              <p class="note-text">{{ note[1] }}</p>
+              <span class="note-meta">
+                🕒 {{ note[2].strftime('%b %d, %Y — %I:%M %p') if note[2] else 'Just now' }}
+              </span>
+            </div>
+            <!-- Delete Note Form -->
+            <form action="/delete/{{ note[0] }}" method="POST" class="delete-form">
+              <button
+                type="submit"
+                class="btn btn-danger"
+                id="delete-note-{{ note[0] }}"
+                aria-label="Delete note {{ note[0] }}"
+                title="Delete this note"
+              >
+                🗑
+              </button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <!-- Empty state when no notes exist -->
+        <div class="empty-state" id="empty-state">
+          <span class="empty-icon">🗒️</span>
+          <p>No notes yet. Start by adding one above!</p>
+        </div>
+      {% endif %}
+    </section>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────── -->
+  <footer class="site-footer">
+    <p>Built with 🐍 Flask &amp; 🐬 MySQL &nbsp;|&nbsp; Containerized with 🐳 Docker</p>
+  </footer>
+
+</body>
+</html>
