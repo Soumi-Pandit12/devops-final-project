@@ -34,9 +34,9 @@ resource "aws_route_table_association" "a" {
   route_table_id = aws_route_table.rt.id
 }
 
-# 6. Security Group (The Firewall)
+# 6. Security Group (Updated for Port 5000)
 resource "aws_security_group" "web_sg" {
-  name   = "allow_web_traffic" # Kept the original name to avoid the "Still destroying" error
+  name   = "allow_web_traffic"
   vpc_id = aws_vpc.main.id
 
   ingress {
@@ -47,10 +47,11 @@ resource "aws_security_group" "web_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # CHANGED: Port 80 removed/replaced with Port 5000
   ingress {
-    description = "Flask App Traffic"
-    from_port   = 80
-    to_port     = 80
+    description = "Flask App on 5000"
+    from_port   = 5000
+    to_port     = 5000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -91,3 +92,4 @@ resource "aws_instance" "flask_server" {
 
   tags = { Name = "DevOps-Final-Server" }
 }
+

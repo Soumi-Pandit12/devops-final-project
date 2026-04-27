@@ -1,13 +1,13 @@
 variable "region" {
-  description = "AWS Region"
+  description = "AWS Region where the resources will be created"
   type        = string
   default     = "ap-south-1"
 }
 
 variable "ami_id" {
-  description = "Ubuntu 24.04 AMI ID for Mumbai"
+  description = "Ubuntu 24.04 AMI ID for ap-south-1"
   type        = string
-  default     = "ami-05d2d839d4f73aafb"
+  default     = "ami-05d2d839d4f73aafb" 
 }
 
 variable "instance_type" {
@@ -17,7 +17,7 @@ variable "instance_type" {
 }
 
 variable "key_name" {
-  description = "Name of the EC2 Key Pair (without .pem)"
+  description = "Name of the EC2 Key Pair (ensure this exists in your AWS Console)"
   type        = string
   default     = "terra-server-key"
 }

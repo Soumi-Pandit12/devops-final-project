@@ -1,9 +1,0 @@
-version: '3.8'
-services:
-  flask-app:
-    build: .
-    image: ${DOCKER_USER}/quicknotes-final:latest
-    container_name: my-running-app
-    ports:
-      - "80:5000"
-    restart: always
