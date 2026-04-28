@@ -1,16 +1,5 @@
-# Sensitive data
-.env
-
-# Terraform files
 .terraform/
 *.tfstate
 *.tfstate.backup
-.terraform.lock.hcl
-
-# Python cache
+.env
 __pycache__/
-*.py[cod]
-
-# OS files
-.DS_Store
-Thumbs.db

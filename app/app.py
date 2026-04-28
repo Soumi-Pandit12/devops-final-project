@@ -5,7 +5,7 @@ import pymysql.cursors
 from flask import Flask, render_template, request, redirect, url_for
 
 # -- DB config from environment (Defaults match your Docker setup) --
-DB_HOST = os.getenv("MYSQL_HOST", "quicknotes_mysql")
+DB_HOST = os.getenv("MYSQL_HOST", "terraform-20260428030748881300000001.cnqimo8iklww.ap-south-1.rds.amazonaws.com")
 DB_USER = os.getenv("MYSQL_USER", "notesuser")
 DB_PASS = os.getenv("MYSQL_PASSWORD", "notespass")
 DB_NAME = os.getenv("MYSQL_DB", "quicknotes_db")
